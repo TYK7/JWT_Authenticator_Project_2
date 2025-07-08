@@ -1,14 +1,15 @@
 version: '3.8'
 
 services:
-  # PostgreSQL Database
+  # PostgreSQL Database (Local Development)
+  # Note: You're using AWS RDS in production, this is for local testing
   postgres:
     image: postgres:13-alpine
-    container_name: jwt-postgres
+    container_name: jwt-postgres-local
     environment:
-      POSTGRES_DB: jwt_auth_db
-      POSTGRES_USER: jwt_user
-      POSTGRES_PASSWORD: jwt_password
+      POSTGRES_DB: myprojectdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: srikar045
     ports:
       - "5432:5432"
     volumes:
@@ -17,7 +18,7 @@ services:
     networks:
       - jwt-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U jwt_user -d jwt_auth_db"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d myprojectdb"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -29,27 +30,27 @@ services:
     ports:
       - "8080:8080"
     environment:
-      # Database Configuration
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/jwt_auth_db
-      SPRING_DATASOURCE_USERNAME: jwt_user
-      SPRING_DATASOURCE_PASSWORD: jwt_password
+      # Database Configuration (Local Docker PostgreSQL)
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/myprojectdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: srikar045
       
-      # Application URLs (Change these for production)
+      # Application URLs
       APP_BASE_URL: http://localhost:8080
       APP_FRONTEND_URL: http://localhost:3000
       
-      # JWT Configuration
-      JWT_SECRET: mySecretKey123456789012345678901234567890
+      # JWT Configuration (Your actual secret)
+      JWT_SECRET: yourSuperSecretKeyThatIsAtLeast256BitsLongAndShouldBeStoredSecurely
       JWT_EXPIRATION: 86400000
       
-      # Email Configuration (Update with your SMTP settings)
+      # Email Configuration (Your actual Gmail settings)
       SPRING_MAIL_HOST: smtp.gmail.com
       SPRING_MAIL_PORT: 587
-      SPRING_MAIL_USERNAME: your-email@gmail.com
-      SPRING_MAIL_PASSWORD: your-app-password
+      SPRING_MAIL_USERNAME: tyedukondalu@stratapps.com
+      SPRING_MAIL_PASSWORD: whesvjdtjmyhgwwt
       
-      # Google OAuth2 (Update with your credentials)
-      GOOGLE_CLIENT_ID: your-google-client-id
+      # Google OAuth2 (Your actual client ID)
+      GOOGLE_CLIENT_ID: 333815600502-fcfheqik99ceft5sq5nk4f8ae5aialec.apps.googleusercontent.com
       
       # Profile
       SPRING_PROFILES_ACTIVE: postgres
