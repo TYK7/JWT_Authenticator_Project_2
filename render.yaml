@@ -1,0 +1,59 @@
+# Render Blueprint Configuration
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: jwt-postgres
+    env: docker
+    dockerfilePath: ./Dockerfile.postgres
+    plan: free
+    databases:
+      - name: jwt_auth_db
+        user: jwt_user
+
+  # JWT Authenticator Web Service
+  - type: web
+    name: jwt-authenticator
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    buildCommand: "./mvnw clean package -DskipTests"
+    startCommand: "java -jar app.jar"
+    healthCheckPath: /actuator/health
+    envVars:
+      # Database Configuration (will be auto-populated by Render)
+      - key: DATABASE_URL
+        sync: false
+      
+      # Application URLs (Update these with your Render URLs)
+      - key: APP_BASE_URL
+        value: https://your-app-name.onrender.com
+      - key: APP_FRONTEND_URL
+        value: https://your-frontend-name.onrender.com
+      
+      # JWT Configuration
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: 86400000
+      
+      # Email Configuration (Add your SMTP settings)
+      - key: SPRING_MAIL_HOST
+        value: smtp.gmail.com
+      - key: SPRING_MAIL_PORT
+        value: 587
+      - key: SPRING_MAIL_USERNAME
+        sync: false
+      - key: SPRING_MAIL_PASSWORD
+        sync: false
+      
+      # Google OAuth2 Configuration
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      
+      # Spring Profile
+      - key: SPRING_PROFILES_ACTIVE
+        value: postgres
+      
+      # JVM Options for Render's memory limits
+      - key: JAVA_OPTS
+        value: -Xmx450m -Xms200m -XX:+UseG1GC -XX:MaxGCPauseMillis=200

@@ -1,0 +1,51 @@
+# Ignore unnecessary files for Docker build
+target/
+!target/*.jar
+
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Documentation
+*.md
+!README.md
+
+# Docker files (not needed in container)
+Dockerfile*
+docker-compose*
+
+# Environment files (security)
+.env
+.env.local
+.env.production
+
+# Node modules (if any)
+node_modules/
+
+# Test files
+src/test/
+
+# Build artifacts
+build/

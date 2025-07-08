@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:13-alpine
+    container_name: jwt-postgres
+    environment:
+      POSTGRES_DB: jwt_auth_db
+      POSTGRES_USER: jwt_user
+      POSTGRES_PASSWORD: jwt_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - jwt-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jwt_user -d jwt_auth_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # JWT Authenticator Application
+  jwt-app:
+    build: .
+    container_name: jwt-authenticator
+    ports:
+      - "8080:8080"
+    environment:
+      # Database Configuration
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/jwt_auth_db
+      SPRING_DATASOURCE_USERNAME: jwt_user
+      SPRING_DATASOURCE_PASSWORD: jwt_password
+      
+      # Application URLs (Change these for production)
+      APP_BASE_URL: http://localhost:8080
+      APP_FRONTEND_URL: http://localhost:3000
+      
+      # JWT Configuration
+      JWT_SECRET: mySecretKey123456789012345678901234567890
+      JWT_EXPIRATION: 86400000
+      
+      # Email Configuration (Update with your SMTP settings)
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: your-email@gmail.com
+      SPRING_MAIL_PASSWORD: your-app-password
+      
+      # Google OAuth2 (Update with your credentials)
+      GOOGLE_CLIENT_ID: your-google-client-id
+      
+      # Profile
+      SPRING_PROFILES_ACTIVE: postgres
+      
+      # JVM Options
+      JAVA_OPTS: -Xmx512m -Xms256m
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - jwt-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  postgres_data:
+
+networks:
+  jwt-network:
+    driver: bridge
