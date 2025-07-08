@@ -1,0 +1,42 @@
+# Render Environment Variables Template
+# Copy these to your Render service Environment tab
+
+# === REQUIRED DATABASE CONFIGURATION ===
+# Option 1: Use your AWS RDS (recommended)
+DATABASE_URL=jdbc:postgresql://database-1.ctoysco66obu.eu-north-1.rds.amazonaws.com:5432/myprojectdb
+
+# Option 2: Or use individual components if DATABASE_URL doesn't work
+# DB_HOST=database-1.ctoysco66obu.eu-north-1.rds.amazonaws.com
+# DB_PORT=5432
+# DB_NAME=myprojectdb
+# DB_USERNAME=postgres
+# DB_PASSWORD=srikar045
+
+# === APPLICATION URLS (CHANGE THESE) ===
+APP_BASE_URL=https://your-app-name.onrender.com
+APP_FRONTEND_URL=https://your-frontend-domain.com
+
+# === EMAIL CONFIGURATION (YOUR EXISTING SETTINGS) ===
+SPRING_MAIL_USERNAME=tyedukondalu@stratapps.com
+SPRING_MAIL_PASSWORD=whesvjdtjmyhgwwt
+
+# === GOOGLE OAUTH2 (YOUR EXISTING SETTINGS) ===
+GOOGLE_CLIENT_ID=333815600502-fcfheqik99ceft5sq5nk4f8ae5aialec.apps.googleusercontent.com
+
+# === JWT CONFIGURATION (YOUR EXISTING SETTINGS) ===
+JWT_SECRET=yourSuperSecretKeyThatIsAtLeast256BitsLongAndShouldBeStoredSecurely
+
+# === SPRING PROFILE ===
+SPRING_PROFILES_ACTIVE=render
+
+# === OPTIONAL (have defaults) ===
+# JWT_EXPIRATION=86400000
+# SPRING_MAIL_HOST=smtp.gmail.com
+# SPRING_MAIL_PORT=587
+
+# === INSTRUCTIONS ===
+# 1. Go to your Render service dashboard
+# 2. Click on "Environment" tab
+# 3. Add each variable above (one by one)
+# 4. Update APP_BASE_URL with your actual Render URL
+# 5. Click "Manual Deploy" → "Deploy latest commit"
