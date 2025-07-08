@@ -1,0 +1,41 @@
+# Render Environment Variables Template - MEMORY OPTIMIZED
+# Copy these to your Render service Environment tab
+
+# === REQUIRED DATABASE CONFIGURATION ===
+DATABASE_URL=jdbc:postgresql://database-1.ctoysco66obu.eu-north-1.rds.amazonaws.com:5432/myprojectdb
+
+# === APPLICATION URLS (CHANGE THESE) ===
+APP_BASE_URL=https://your-app-name.onrender.com
+APP_FRONTEND_URL=https://your-frontend-domain.com
+
+# === EMAIL CONFIGURATION (YOUR EXISTING SETTINGS) ===
+SPRING_MAIL_USERNAME=tyedukondalu@stratapps.com
+SPRING_MAIL_PASSWORD=whesvjdtjmyhgwwt
+
+# === GOOGLE OAUTH2 (YOUR EXISTING SETTINGS) ===
+GOOGLE_CLIENT_ID=333815600502-fcfheqik99ceft5sq5nk4f8ae5aialec.apps.googleusercontent.com
+
+# === JWT CONFIGURATION (YOUR EXISTING SETTINGS) ===
+JWT_SECRET=yourSuperSecretKeyThatIsAtLeast256BitsLongAndShouldBeStoredSecurely
+
+# === SPRING PROFILE ===
+SPRING_PROFILES_ACTIVE=postgres
+
+# === MEMORY OPTIMIZATION (NEW - IMPORTANT!) ===
+JAVA_OPTS=-Xmx350m -Xms128m -XX:+UseSerialGC -XX:MaxMetaspaceSize=128m -Djava.awt.headless=true
+
+# === INSTRUCTIONS ===
+# 1. Go to your Render service dashboard
+# 2. Click on "Environment" tab
+# 3. Add each variable above (one by one)
+# 4. Update APP_BASE_URL with your actual Render URL
+# 5. IMPORTANT: Make sure to add the JAVA_OPTS variable for memory optimization
+# 6. Click "Manual Deploy" → "Deploy latest commit"
+
+# === MEMORY OPTIMIZATION NOTES ===
+# The JAVA_OPTS variable is crucial for staying within Render's 512MB limit:
+# -Xmx350m: Maximum heap size 350MB (leaves room for other memory)
+# -Xms128m: Initial heap size 128MB (faster startup)
+# -XX:+UseSerialGC: Serial garbage collector (lower memory overhead)
+# -XX:MaxMetaspaceSize=128m: Limit metaspace to 128MB
+# -Djava.awt.headless=true: Disable GUI components

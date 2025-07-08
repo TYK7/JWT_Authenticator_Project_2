@@ -46,8 +46,8 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:8080/actuator/health || exit 1
 
-# Environment variables with defaults
-ENV JAVA_OPTS="-Xmx512m -Xms256m" \
+# Environment variables optimized for Render's 512MB limit
+ENV JAVA_OPTS="-Xmx350m -Xms128m -XX:+UseSerialGC -XX:MaxMetaspaceSize=128m -Djava.awt.headless=true" \
     SERVER_PORT=8080 \
     SPRING_PROFILES_ACTIVE=postgres
 
