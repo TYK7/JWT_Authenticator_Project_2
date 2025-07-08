@@ -1,0 +1,603 @@
+{
+	"info": {
+		"_postman_id": "jwt-authenticator-collection",
+		"name": "JWT Authenticator API",
+		"description": "Complete API collection for JWT Authenticator microservice with authentication, 2FA, password reset, and more.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Id",
+								"value": "tenant1",
+								"description": "Required tenant ID"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\",\n    \"email\": \"testuser@example.com\",\n    \"location\": \"New York\",\n    \"tenantId\": \"tenant1\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user account"
+					}
+				},
+				{
+					"name": "Verify Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/verify-email?token={{verificationToken}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"verify-email"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{verificationToken}}",
+									"description": "Email verification token received via email"
+								}
+							]
+						},
+						"description": "Verify user email address using token from email"
+					}
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('accessToken', response.token);",
+									"    pm.environment.set('refreshToken', response.refreshToken);",
+									"    console.log('Tokens saved to environment');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Id",
+								"value": "tenant1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\",\n    \"tenantId\": \"tenant1\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login user and get JWT tokens"
+					}
+				},
+				{
+					"name": "Generate Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Id",
+								"value": "tenant1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\",\n    \"tenantId\": \"tenant1\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/token",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"token"
+							]
+						},
+						"description": "Generate authentication token"
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('accessToken', response.token);",
+									"    pm.environment.set('refreshToken', response.refreshToken);",
+									"    console.log('New tokens saved to environment');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{refreshToken}}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "Refresh JWT token using refresh token"
+					}
+				}
+			],
+			"description": "User authentication endpoints"
+		},
+		{
+			"name": "Password Management",
+			"item": [
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"testuser@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/forgot-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"forgot-password"
+							]
+						},
+						"description": "Request password reset email"
+					}
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token\": \"{{resetToken}}\",\n    \"newPassword\": \"newpassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/reset-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						},
+						"description": "Reset password using token from email"
+					}
+				}
+			],
+			"description": "Password reset functionality"
+		},
+		{
+			"name": "Two-Factor Authentication",
+			"item": [
+				{
+					"name": "Setup 2FA",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/tfa/setup?username=testuser",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"tfa",
+								"setup"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "testuser"
+								}
+							]
+						},
+						"description": "Generate 2FA secret for user"
+					}
+				},
+				{
+					"name": "Verify 2FA Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"code\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/tfa/verify",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"tfa",
+								"verify"
+							]
+						},
+						"description": "Verify 2FA TOTP code"
+					}
+				},
+				{
+					"name": "Enable 2FA",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/tfa/enable?username=testuser",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"tfa",
+								"enable"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "testuser"
+								}
+							]
+						},
+						"description": "Enable 2FA for user"
+					}
+				},
+				{
+					"name": "Disable 2FA",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/tfa/disable?username=testuser",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"tfa",
+								"disable"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "testuser"
+								}
+							]
+						},
+						"description": "Disable 2FA for user"
+					}
+				}
+			],
+			"description": "Two-factor authentication management"
+		},
+		{
+			"name": "Protected Endpoints",
+			"item": [
+				{
+					"name": "Get Protected Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "tenant1"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/protected/data",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"protected",
+								"data"
+							]
+						},
+						"description": "Access protected endpoint with JWT token"
+					}
+				},
+				{
+					"name": "Get User Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Tenant-Id",
+								"value": "tenant1"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/protected/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"protected",
+								"profile"
+							]
+						},
+						"description": "Get authenticated user profile"
+					}
+				}
+			],
+			"description": "Protected endpoints requiring authentication"
+		},
+		{
+			"name": "Request Forwarding",
+			"item": [
+				{
+					"name": "Forward Authenticated Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Forward-URL",
+								"value": "https://jsonplaceholder.typicode.com/posts/1",
+								"description": "Target URL to forward the request to"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\",\n    \"tenantId\": \"tenant1\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/forward",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"forward"
+							]
+						},
+						"description": "Authenticate user and forward request to external service"
+					}
+				}
+			],
+			"description": "Request forwarding with authentication"
+		},
+		{
+			"name": "Health & Monitoring",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/actuator/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"actuator",
+								"health"
+							]
+						},
+						"description": "Check application health status"
+					}
+				},
+				{
+					"name": "Application Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/actuator/info",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"actuator",
+								"info"
+							]
+						},
+						"description": "Get application information"
+					}
+				}
+			],
+			"description": "Health checks and monitoring endpoints"
+		},
+		{
+			"name": "API Documentation",
+			"item": [
+				{
+					"name": "Swagger UI",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/swagger-ui.html",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"swagger-ui.html"
+							]
+						},
+						"description": "Access Swagger UI for interactive API documentation"
+					}
+				},
+				{
+					"name": "OpenAPI JSON",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v3/api-docs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v3",
+								"api-docs"
+							]
+						},
+						"description": "Get OpenAPI specification in JSON format"
+					}
+				}
+			],
+			"description": "API documentation endpoints"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refreshToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "verificationToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "resetToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

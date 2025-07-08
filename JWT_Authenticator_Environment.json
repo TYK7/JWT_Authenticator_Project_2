@@ -1,0 +1,79 @@
+{
+	"id": "jwt-authenticator-env",
+	"name": "JWT Authenticator Environment",
+	"values": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "refreshToken",
+			"value": "",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "verificationToken",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "resetToken",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "tenantId",
+			"value": "tenant1",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "testUsername",
+			"value": "testuser",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "testEmail",
+			"value": "testuser@example.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "testPassword",
+			"value": "password123",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "googleIdToken",
+			"value": "",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "tfaSecret",
+			"value": "",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "tfaCode",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment"
+}

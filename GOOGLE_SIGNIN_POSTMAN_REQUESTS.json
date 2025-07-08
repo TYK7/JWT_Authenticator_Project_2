@@ -1,0 +1,84 @@
+{
+	"name": "Google Sign-In API Requests",
+	"description": "Additional Postman requests for Google Sign-In functionality",
+	"requests": [
+		{
+			"name": "Google Sign-In",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    const response = pm.response.json();",
+							"    pm.environment.set('accessToken', response.token);",
+							"    pm.environment.set('refreshToken', response.refreshToken);",
+							"    console.log('Google Sign-In successful, tokens saved to environment');",
+							"    console.log('User:', response.username);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"idToken\": \"{{googleIdToken}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/google",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"google"
+					]
+				},
+				"description": "Authenticate user with Google OAuth2 ID token. The idToken should be obtained from Google Sign-In on the frontend."
+			}
+		},
+		{
+			"name": "Google Sign-In Demo Page",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/test/google-signin-demo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"test",
+						"google-signin-demo"
+					]
+				},
+				"description": "Access the Google Sign-In demo page for testing"
+			}
+		}
+	],
+	"instructions": {
+		"setup": [
+			"1. Set up Google OAuth2 credentials in Google Cloud Console",
+			"2. Configure your Google Client ID in application.properties",
+			"3. Use the demo page or frontend to get a Google ID token",
+			"4. Set the googleIdToken environment variable with the obtained token",
+			"5. Execute the Google Sign-In request"
+		],
+		"testing": [
+			"1. Go to {{baseUrl}}/test/google-signin-demo",
+			"2. Click 'Sign in with Google'",
+			"3. Complete Google authentication",
+			"4. Copy the ID token from the response",
+			"5. Use it in the Postman request"
+		]
+	}
+}
