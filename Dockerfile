@@ -1,5 +1,9 @@
 # Multi-stage build for optimized Docker image
-FROM maven:3.8.6-openjdk-8-alpine AS builder
+# Build stage
+FROM openjdk:8-jdk-alpine AS builder
+
+# Install Maven
+RUN apk add --no-cache maven
 
 # Set working directory
 WORKDIR /app
