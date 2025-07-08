@@ -30,7 +30,8 @@ JAVA_OPTS=-Xmx350m -Xms128m -XX:+UseSerialGC -XX:MaxMetaspaceSize=128m -Djava.aw
 # 3. Add each variable above (one by one)
 # 4. Update APP_BASE_URL with your actual Render URL
 # 5. IMPORTANT: Make sure to add the JAVA_OPTS variable for memory optimization
-# 6. Click "Manual Deploy" → "Deploy latest commit"
+# 6. DO NOT set PORT variable - Render sets this automatically!
+# 7. Click "Manual Deploy" → "Deploy latest commit"
 
 # === MEMORY OPTIMIZATION NOTES ===
 # The JAVA_OPTS variable is crucial for staying within Render's 512MB limit:
