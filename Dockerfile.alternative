@@ -1,23 +1,4 @@
-# Multi-stage build for optimized Docker image
-# Build stage - Use official Maven image with OpenJDK 8
-FROM maven:3.6.3-openjdk-8-slim AS builder
-
-# Set working directory
-WORKDIR /app
-
-# Copy pom.xml first (for better caching)
-COPY pom.xml .
-
-# Download dependencies (this layer will be cached if pom.xml doesn't change)
-RUN mvn dependency:go-offline -B
-
-# Copy source code
-COPY src ./src
-
-# Build the application
-RUN mvn clean package -DskipTests -B
-
-# Production stage
+# Alternative Dockerfile - Copy pre-built JAR approach
 FROM openjdk:8-jre-alpine
 
 # Install curl for health checks
@@ -30,8 +11,9 @@ RUN addgroup -g 1001 -S appgroup && \
 # Set working directory
 WORKDIR /app
 
-# Copy the jar file from builder stage
-COPY --from=builder /app/target/*.jar app.jar
+# Copy the pre-built jar file
+# Make sure to run 'mvn clean package -DskipTests' before building Docker image
+COPY target/*.jar app.jar
 
 # Change ownership to non-root user
 RUN chown -R appuser:appgroup /app
