@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version> <!-- Compatible with Java 8 -->
+        <version>3.2.0</version> <!-- Compatible with Java 21 -->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -16,9 +16,11 @@
     <description>Demo project for Spring Boot JWT authentication</description>
 
     <properties>
-        <java.version>1.8</java.version>
-        <jjwt.version>0.11.5</jjwt.version>
-        <springdoc.version>1.6.15</springdoc.version> <!-- Compatible with Spring Boot 2.7.x -->
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <jjwt.version>0.12.3</jjwt.version>
+        <springdoc.version>2.2.0</springdoc.version> <!-- Compatible with Spring Boot 3.x -->
     </properties>
 
     <dependencies>
@@ -124,7 +126,7 @@
         <!-- Documentation -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
 
@@ -149,6 +151,17 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.12.1</version>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                    <executable>C:\Program Files\Java\jdk-21\bin\javac</executable>
+                    <fork>true</fork>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

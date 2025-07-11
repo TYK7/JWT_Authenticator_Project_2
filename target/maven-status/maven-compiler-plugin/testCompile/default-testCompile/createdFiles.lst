@@ -1,0 +1,7 @@
+com\example\jwtauthenticator\controller\AuthControllerIntegrationTest.class
+com\example\jwtauthenticator\service\IdGeneratorServiceTest.class
+com\example\jwtauthenticator\config\TestConfig.class
+com\example\jwtauthenticator\controller\ForwardControllerTest.class
+com\example\jwtauthenticator\service\AuthServiceTest.class
+com\example\jwtauthenticator\service\CompanyDetailsServiceTest.class
+com\example\jwtauthenticator\util\JwtUtilTest.class

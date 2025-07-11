@@ -8,10 +8,10 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
@@ -30,7 +30,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader("Authorization");
-        final String tenantId = request.getHeader("X-Tenant-Id"); // Extract tenantId
+        final String brandId = request.getHeader("X-Brand-Id"); // Extract brandId
 
         String username = null;
         String jwt = null;
@@ -41,11 +41,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            if (tenantId == null || tenantId.isEmpty()) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "X-Tenant-Id header is missing");
+            if (brandId == null || brandId.isEmpty()) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "X-Brand-Id header is missing");
                 return;
             }
-            UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsernameAndTenantId(username, tenantId);
+            UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsernameAndBrandId(username, brandId);
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
 

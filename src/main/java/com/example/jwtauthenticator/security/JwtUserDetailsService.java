@@ -25,13 +25,13 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        throw new UnsupportedOperationException("Use loadUserByUsernameAndTenantId instead");
+        throw new UnsupportedOperationException("Use loadUserByUsernameAndBrandId instead");
     }
 
-    public UserDetails loadUserByUsernameAndTenantId(String username, String tenantId) throws UsernameNotFoundException {
-        Optional<User> userOptional = userRepository.findByUsernameAndTenantId(username, tenantId);
+    public UserDetails loadUserByUsernameAndBrandId(String username, String brandId) throws UsernameNotFoundException {
+        Optional<User> userOptional = userRepository.findByUsernameAndBrandId(username, brandId);
         if (!userOptional.isPresent()) {
-            throw new UsernameNotFoundException("User not found with username: " + username + " for tenant: " + tenantId);
+            throw new UsernameNotFoundException("User not found with username: " + username + " for brand: " + brandId);
         }
         User user = userOptional.get();
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),

@@ -42,17 +42,27 @@ public class AuthControllerIntegrationTest {
 
     @Test
     void registerUser_success() throws Exception {
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUsername("testuser");
-        registerRequest.setPassword("password");
-        registerRequest.setEmail("test@example.com");
-        registerRequest.setTenantId("tenant1");
+        RegisterRequest registerRequest = new RegisterRequest(
+            "testuser", 
+            "password", 
+            "test@example.com", 
+            "John", 
+            "Doe", 
+            "+1234567890", 
+            "New York", 
+            "brand1"
+        );
 
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("User registered successfully. Please verify your email."));
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.message").value("User registered successfully. Please verify your email."))
+                .andExpect(jsonPath("$.brandId").exists())
+                .andExpect(jsonPath("$.userCode").exists())
+                .andExpect(jsonPath("$.username").value("testuser"))
+                .andExpect(jsonPath("$.email").value("test@example.com"));
     }
 
     @Test
@@ -60,15 +70,12 @@ public class AuthControllerIntegrationTest {
         // Register and verify user first
         registerUser_success(); // This will register the user
         // Manually verify email for integration test simplicity
-        userRepository.findByUsernameAndTenantId("testuser", "tenant1").ifPresent(user -> {
+        userRepository.findByUsernameAndBrandId("testuser", "brand1").ifPresent(user -> {
             user.setEmailVerified(true);
             userRepository.save(user);
         });
 
-        AuthRequest authRequest = new AuthRequest();
-        authRequest.setUsername("testuser");
-        authRequest.setPassword("password");
-        authRequest.setTenantId("tenant1");
+        AuthRequest authRequest = new AuthRequest("testuser", "password", "brand1");
 
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)

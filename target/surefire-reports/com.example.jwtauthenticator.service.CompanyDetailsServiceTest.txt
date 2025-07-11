@@ -1,0 +1,36 @@
+-------------------------------------------------------------------------------
+Test set: com.example.jwtauthenticator.service.CompanyDetailsServiceTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 4, Skipped: 0, Time elapsed: 6.926 s <<< FAILURE! -- in com.example.jwtauthenticator.service.CompanyDetailsServiceTest
+com.example.jwtauthenticator.service.CompanyDetailsServiceTest.extractCompanyDetailsAsync_nullResponse -- Time elapsed: 6.298 s <<< ERROR!
+java.lang.RuntimeException: Unexpected error while processing request: External API returned empty response
+	at com.example.jwtauthenticator.service.CompanyDetailsService.extractCompanyDetailsAsync(CompanyDetailsService.java:95)
+	at com.example.jwtauthenticator.service.CompanyDetailsServiceTest.extractCompanyDetailsAsync_nullResponse(CompanyDetailsServiceTest.java:158)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.example.jwtauthenticator.service.CompanyDetailsServiceTest.extractCompanyDetailsAsync_networkError -- Time elapsed: 0.067 s <<< ERROR!
+java.lang.RuntimeException: Network error while calling external API: Network timeout
+	at com.example.jwtauthenticator.service.CompanyDetailsService.extractCompanyDetailsAsync(CompanyDetailsService.java:90)
+	at com.example.jwtauthenticator.service.CompanyDetailsServiceTest.extractCompanyDetailsAsync_networkError(CompanyDetailsServiceTest.java:140)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.example.jwtauthenticator.service.CompanyDetailsServiceTest.extractCompanyDetailsAsync_httpServerError -- Time elapsed: 0.122 s <<< ERROR!
+java.lang.RuntimeException: External API server error: 500 INTERNAL_SERVER_ERROR - 
+	at com.example.jwtauthenticator.service.CompanyDetailsService.extractCompanyDetailsAsync(CompanyDetailsService.java:85)
+	at com.example.jwtauthenticator.service.CompanyDetailsServiceTest.extractCompanyDetailsAsync_httpServerError(CompanyDetailsServiceTest.java:124)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.example.jwtauthenticator.service.CompanyDetailsServiceTest.extractCompanyDetailsAsync_httpClientError -- Time elapsed: 0.051 s <<< ERROR!
+java.lang.RuntimeException: External API client error: 400 BAD_REQUEST - 
+	at com.example.jwtauthenticator.service.CompanyDetailsService.extractCompanyDetailsAsync(CompanyDetailsService.java:80)
+	at com.example.jwtauthenticator.service.CompanyDetailsServiceTest.extractCompanyDetailsAsync_httpClientError(CompanyDetailsServiceTest.java:108)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

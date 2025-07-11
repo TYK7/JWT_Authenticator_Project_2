@@ -1,8 +1,12 @@
 # Render Environment Variables Template - MEMORY OPTIMIZED
 # Copy these to your Render service Environment tab
 
-# === REQUIRED DATABASE CONFIGURATION ===
-DATABASE_URL=jdbc:postgresql://database-1.ctoysco66obu.eu-north-1.rds.amazonaws.com:5432/myprojectdb
+# === DATABASE CONFIGURATION (INDIVIDUAL COMPONENTS - MORE RELIABLE) ===
+DB_HOST=database-1.ctoysco66obu.eu-north-1.rds.amazonaws.com
+DB_PORT=5432
+DB_NAME=myprojectdb
+DB_USERNAME=postgres
+DB_PASSWORD=srikar045
 
 # === APPLICATION URLS (CHANGE THESE) ===
 APP_BASE_URL=https://your-app-name.onrender.com

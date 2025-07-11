@@ -1,13 +1,10 @@
 package com.example.jwtauthenticator.dto;
 
-import lombok.Data;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-
-@Data
-public class PasswordResetRequest {
+public record PasswordResetRequest(
     @NotBlank
     @Email
-    private String email;
-}
+    String email
+) {}

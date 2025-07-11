@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -28,6 +28,9 @@ public class User {
     @Column(name = "user_id")
     private UUID userId;
 
+    @Column(name = "user_code", unique = true)
+    private String userCode; // Human-readable user ID like USER0001
+
     @NotBlank
     @Column(unique = true)
     private String username;
@@ -39,6 +42,15 @@ public class User {
     @NotBlank
     @Column(unique = true)
     private String email;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     private String location;
 
@@ -60,8 +72,8 @@ public class User {
     @Column(name = "tfa_enabled")
     private boolean tfaEnabled;
 
-    @Column(name = "tenant_id")
-    private String tenantId;
+    @Column(name = "brand_id")
+    private String brandId;
 
     @Column(name = "email_verified")
     private boolean emailVerified;

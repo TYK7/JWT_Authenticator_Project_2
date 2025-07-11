@@ -1,13 +1,10 @@
 package com.example.jwtauthenticator.dto;
 
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
 
-import javax.validation.constraints.NotBlank;
-
-@Data
-public class TfaRequest {
+public record TfaRequest(
     @NotBlank
-    private String username;
+    String username,
     @NotBlank
-    private String code;
-}
+    String code
+) {}

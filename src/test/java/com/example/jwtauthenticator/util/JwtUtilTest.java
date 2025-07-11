@@ -28,7 +28,7 @@ public class JwtUtilTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        ReflectionTestUtils.setField(jwtUtil, "SECRET_KEY", secret);
+        ReflectionTestUtils.setField(jwtUtil, "secretString", secret);
     }
 
     @Test

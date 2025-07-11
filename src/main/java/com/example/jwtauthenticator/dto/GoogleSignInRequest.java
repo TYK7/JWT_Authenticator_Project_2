@@ -1,16 +1,8 @@
 package com.example.jwtauthenticator.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
 
-import javax.validation.constraints.NotBlank;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class GoogleSignInRequest {
-    
+public record GoogleSignInRequest(
     @NotBlank(message = "ID token is required")
-    private String idToken;
-}
+    String idToken
+) {}

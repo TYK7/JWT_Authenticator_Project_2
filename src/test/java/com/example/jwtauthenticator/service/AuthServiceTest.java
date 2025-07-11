@@ -4,7 +4,10 @@ import com.example.jwtauthenticator.entity.User;
 import com.example.jwtauthenticator.model.AuthRequest;
 import com.example.jwtauthenticator.model.AuthResponse;
 import com.example.jwtauthenticator.model.RegisterRequest;
+import com.example.jwtauthenticator.dto.RegisterResponse;
 import com.example.jwtauthenticator.repository.UserRepository;
+import com.example.jwtauthenticator.repository.LoginLogRepository;
+import com.example.jwtauthenticator.config.AppConfig;
 import com.example.jwtauthenticator.security.JwtUserDetailsService;
 import com.example.jwtauthenticator.util.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +27,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,6 +51,15 @@ public class AuthServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private IdGeneratorService idGeneratorService;
+
+    @Mock
+    private AppConfig appConfig;
+
+    @Mock
+    private LoginLogRepository loginLogRepository;
+
     @InjectMocks
     private AuthService authService;
 
@@ -57,23 +70,25 @@ public class AuthServiceTest {
 
     @BeforeEach
     void setUp() {
-        registerRequest = new RegisterRequest();
-        registerRequest.setUsername("testuser");
-        registerRequest.setPassword("password");
-        registerRequest.setEmail("test@example.com");
-        registerRequest.setTenantId("tenant1");
+        registerRequest = new RegisterRequest(
+            "testuser", 
+            "password", 
+            "test@example.com", 
+            "John", 
+            "Doe", 
+            "+1234567890", 
+            "New York", 
+            null // Test auto-generation
+        );
 
-        authRequest = new AuthRequest();
-        authRequest.setUsername("testuser");
-        authRequest.setPassword("password");
-        authRequest.setTenantId("tenant1");
+        authRequest = new AuthRequest("testuser", "password", "brand1");
 
         user = User.builder()
                 .userId(UUID.randomUUID())
                 .username("testuser")
                 .password("encodedPassword")
                 .email("test@example.com")
-                .tenantId("tenant1")
+                .brandId("brand1")
                 .emailVerified(true)
                 .build();
 
@@ -82,47 +97,56 @@ public class AuthServiceTest {
 
     @Test
     void registerUser_success() {
-        when(userRepository.existsByUsernameAndTenantId(anyString(), anyString())).thenReturn(false);
-        when(userRepository.existsByEmailAndTenantId(anyString(), anyString())).thenReturn(false);
+        when(userRepository.existsByUsernameAndBrandId(anyString(), anyString())).thenReturn(false);
+        when(userRepository.existsByEmailAndBrandId(anyString(), anyString())).thenReturn(false);
         when(userDetailsService.save(any(User.class))).thenReturn(user);
+        when(idGeneratorService.generateNextId()).thenReturn("MRTFY0001");
+        when(idGeneratorService.generateNextId("USER")).thenReturn("USER0001");
+        when(appConfig.getApiUrl(anyString())).thenReturn("http://localhost:8080/auth/verify-email?token=test");
 
-        String response = authService.registerUser(registerRequest);
+        RegisterResponse response = authService.registerUser(registerRequest);
 
-        assertEquals("User registered successfully. Please verify your email.", response);
+        assertNotNull(response);
+        assertTrue(response.success());
+        assertEquals("User registered successfully. Please verify your email.", response.message());
+        assertEquals("MRTFY0001", response.brandId());
+        assertEquals("USER0001", response.userCode());
         verify(userDetailsService, times(1)).save(any(User.class));
         verify(emailService, times(1)).sendEmail(anyString(), anyString(), anyString());
     }
 
     @Test
     void registerUser_usernameExists() {
-        when(userRepository.existsByUsernameAndTenantId(anyString(), anyString())).thenReturn(true);
+        when(idGeneratorService.generateNextId()).thenReturn("MRTFY0001");
+        when(idGeneratorService.generateNextId("USER")).thenReturn("USER0001");
+        when(userRepository.existsByUsernameAndBrandId(anyString(), anyString())).thenReturn(true);
 
         RuntimeException thrown = assertThrows(RuntimeException.class, () -> authService.registerUser(registerRequest));
-        assertEquals("Username already exists for this tenant", thrown.getMessage());
+        assertEquals("Username already exists for this brand", thrown.getMessage());
     }
 
     @Test
     void createAuthenticationToken_success() throws Exception {
-        when(userRepository.findByUsernameAndTenantId(anyString(), anyString())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndBrandId(anyString(), anyString())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
-        when(userDetailsService.loadUserByUsernameAndTenantId(anyString(), anyString())).thenReturn(userDetails);
+        when(userDetailsService.loadUserByUsernameAndBrandId(anyString(), anyString())).thenReturn(userDetails);
         when(jwtUtil.generateToken(any(UserDetails.class), anyString())).thenReturn("jwtToken");
         when(jwtUtil.generateRefreshToken(any(UserDetails.class), anyString())).thenReturn("refreshToken");
 
         AuthResponse response = authService.createAuthenticationToken(authRequest);
 
         assertNotNull(response);
-        assertEquals("jwtToken", response.getToken());
-        assertEquals("refreshToken", response.getRefreshToken());
+        assertEquals("jwtToken", response.token());
+        assertEquals("refreshToken", response.refreshToken());
         verify(userRepository, times(1)).save(any(User.class)); // For refresh token update
     }
 
     @Test
     void createAuthenticationToken_emailNotVerified() {
         user.setEmailVerified(false);
-        when(userRepository.findByUsernameAndTenantId(anyString(), anyString())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndBrandId(anyString(), anyString())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
-        when(userDetailsService.loadUserByUsernameAndTenantId(anyString(), anyString())).thenReturn(userDetails);
+        when(userDetailsService.loadUserByUsernameAndBrandId(anyString(), anyString())).thenReturn(userDetails);
 
         RuntimeException thrown = assertThrows(RuntimeException.class, () -> authService.createAuthenticationToken(authRequest));
         assertEquals("Email not verified. Please verify your email to login.", thrown.getMessage());
